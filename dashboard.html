@@ -1,0 +1,694 @@
+<html style="height: auto;">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>WPMS_BI</title>
+  <link href="./favicon.ico" rel="shortcut icon" type="image/x-icon">
+  <link href="./Content/AdminLTE2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./Content/AdminLTE2/dist/css/font-awesome.min.css" rel="stylesheet">
+  <link href="./Content/AdminLTE2/dist/css/ionicons.min.css" rel="stylesheet">
+  <link href="./Content/AdminLTE2/dist/css/AdminLTE.min.css" rel="stylesheet">
+  <link href="./Content/AdminLTE2/dist/css/skins/all-skins.min.css" rel="stylesheet">
+
+  <link href="./Content/dx.common.css" rel="stylesheet">
+  <link href="./Content/dx.light.compact.css" rel="stylesheet">
+
+  <script src="./Scripts/jquery-3.5.1.js"></script>
+  <script src="./Content/AdminLTE2/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="./Content/AdminLTE2/bootstrap/js/bootstrap.min.js"></script>
+  <script src="./Content/AdminLTE2/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  <script src="./Content/AdminLTE2/plugins/fastclick/fastclick.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/demo.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app_iframe.js"></script>
+  <script src="./Scripts/STDCommon.js"></script>
+  <script src="./Scripts/cldr.js"></script>
+  <script src="./Scripts/cldr/event.js"></script>
+  <script src="./Scripts/cldr/supplemental.js"></script>
+  <script src="./Scripts/cldr/unresolved.js"></script>
+  <script src="./Scripts/globalize.js"></script>
+  <script src="./Scripts/globalize/message.js"></script>
+  <script src="./Scripts/globalize/number.js"></script>
+  <script src="./Scripts/globalize/currency.js"></script>
+  <script src="./Scripts/globalize/date.js"></script>
+  <script src="./Scripts/supplemental.js"></script>
+  <script src="./Scripts/ko.js"></script>
+  <script src="./Scripts/dx.all.debug.js"></script>
+  <script src="./Scripts/aspnet/dx.aspnet.mvc.js"></script>
+  <script src="./Scripts/aspnet/dx.aspnet.data.js"></script>
+  <script>
+    // language
+    $(function() {
+      Globalize.locale(navigator.language);
+    });
+
+
+    // Get Info session
+    function sessionGet(key) {
+      let stringValue = window.sessionStorage.getItem(key)
+      if (stringValue !== null) {
+        let value = JSON.parse(stringValue)
+        let expirationDate = new Date(value.expirationDate)
+        if (expirationDate > new Date()) {
+          return value.value
+        } else {
+          alert("세션만료 테스트");
+          window.sessionStorage.removeItem(key)
+        }
+      }
+      return null
+    }
+
+
+    // Add into session
+    function sessionSet(key, value, expirationInMin = 3600) {
+      let expirationDate = new Date(new Date().getTime() + (expirationInMin * 1000));
+
+      let newValue = {
+        value: value,
+        expirationDate: expirationDate.toISOString()
+      }
+
+      window.sessionStorage.setItem(key, JSON.stringify(newValue))
+    }
+
+
+    // Data Source Err ErrorHandler
+    function OnDataErrorHandler(e) {
+      Common_MsgBox(e.message);
+    }
+
+
+    // Confirm Message Box
+    function Confirm_MsgBox(title, msg, callBack) {
+
+      var fClose = function() {
+        $confirm.modal("hide");
+      };
+
+      var $confirm = $('#ConfirmModal');
+
+      $confirm.modal('show');
+
+      $('#ConfirmModal .modal-title').text(title);
+
+      $('#ConfirmModal .modal-body').text(msg);
+
+      $("#confirmOk").unbind().one('click', callBack).one('click', fClose);
+      $("#confirmCancel").unbind().one("click", fClose);
+
+    }
+
+
+    // Message Box
+    function Common_MsgBox(ErrMsg, ErrCode) {
+
+      if (ErrCode == _SessionOut) {
+        alert(ErrMsg);
+        parent.gotoLogin();
+      } else {
+
+        var $message = $('#MessageModal');
+
+        $message.modal('show');
+
+        $('#MessageModal .modal-body').text(ErrMsg);
+
+        $('#MessageModal .btn-secondary').off('click').click(function() {
+          $message.modal('hide');
+        });
+
+      }
+
+    }
+
+
+    // Loading bar
+    function ShowLoading(visble) {
+
+      if (visble) {
+
+        App.blockUI({
+          target: '#tab-content',
+          boxed: true,
+          message: 'Loading......' //,
+          // animate: true
+        });
+
+      } else {
+        App.unblockUI('#tab-content');
+      }
+
+    }
+  </script>
+
+</head>
+
+<body class="skin-blue fixed sidebar-mini" style="height: auto;">
+
+
+
+  <div style="width: 100%;">
+
+
+    <script type="text/javascript">
+      document.addEventListener("resize", onresize);
+
+      var onresize = function() {
+        var width = document.body.clientWidth;
+        var height = document.body.clientHeight;
+        $("#iframeDiv").css("height", $(window).height() - 200);
+      };
+
+      /**
+       * 메뉴 검색
+       */
+      function search_menu() {
+        //검색 할 값
+        var text = $('input[name=q]').val();
+
+        var $ul = $('.sidebar-menu');
+
+        $ul.find("a.nav-link").each(function() {
+          var $a = $(this).css("border", "");
+
+          //검색 할 문자열이 포함되어 있는지 확인
+          if ($a.children("span.menu-text").text().indexOf(text) >= 0) {
+
+            //a 태그의 부모가 숨겨져 있으면
+            $ul = $a.parents("ul");
+
+            if ($ul.is(":hidden")) {
+              $a.parents("ul").prev().click();
+            }
+
+            //메뉴를 클릭하십시오
+            $a.click().css("border", "1px solid");
+
+            //return false;
+          }
+
+        });
+      }
+
+      $(function() {
+        $("#iframeDiv").css("height", $(window).height() - 200);
+
+        //console.log(window.location);
+
+        //App.setbasePath("~/Content/AdminLTE2/");
+        App.setbasePath("../Content/AdminLTE2/");
+        App.setGlobalImgPath("dist/img/");
+
+        addTabs({
+          id: 'Dashboard',
+          title: 'Dashboard',
+          close: false,
+          url: '/Home/Home',
+          urlType: "relative"
+        });
+
+        App.fixIframeCotent();
+
+        $.extend({
+
+          xResponse: function(strURL) {
+
+            var retValue = null;
+
+            jQuery.ajaxSettings.traditional = true;
+
+            //jQuery ajax
+            $.ajax({
+
+              url: encodeURI(strURL),
+              type: 'POST',
+              contentType: "application/json; charset=utf-8",
+              async: false,
+              success: function(result) {
+                retValue = result;
+
+              },
+              error: function(msg) {
+                retValue = result;
+              }
+
+            });
+
+            //Return the response Data
+            return retValue;
+          }
+        });
+
+        var rData = $.xResponse("/Home/Menu");
+        var menus = [{
+          id: "Dashboard",
+          text: "Dashboard",
+          icon: "fa fa-tachometer",
+          url: "/Home/Home",
+          targetType: "iframe-tab"
+        }];
+
+        if (rData.ResponseCode != "") {
+
+          Common_MsgBox(rData.ErrorMessage);
+        } else {
+          menus.push.apply(menus, rData.Data);
+        }
+
+        $('.sidebar-menu').sidebarMenu({
+          data: menus
+        });
+
+      });
+    </script>
+
+    <div class="wrapper" style="height: auto;">
+
+      <header class="main-header">
+        <!-- Logo -->
+        <a href="/Home/Index" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini"><b>W</b>-BI</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg"><b>WPMS</b>-BI</span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- Messages: style can be found in dropdown.less-->
+              <!-- Notifications: style can be found in dropdown.less -->
+              <!-- Tasks: style can be found in dropdown.less -->
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                  <span class="hidden-xs">관리자</span>
+                </a>
+                <ul class="dropdown-menu">
+
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      <a href="#" class="btn btn-default btn-flat">사용자 정보 변경</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="#" class="btn btn-default btn-flat">Logout</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+              <!-- Control Sidebar Toggle Button -->
+
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+
+        <!-- sidebar: style can be found in sidebar.less -->
+        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 887px;">
+          <section class="sidebar" style="height: 887px; overflow: hidden; width: auto;">
+
+            <!-- Sidebar user panel -->
+            <!--
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="../Content/AdminLTE2/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>Alexander Pierce</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                </div>
+            </div>
+            -->
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+              <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                  <button type="button" name="search" id="search-btn" class="btn btn-flat" onclick="search_menu()">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </span>
+              </div>
+            </form>
+            <!-- /.search form -->
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+              <!-- 사용자 메뉴 -->
+              <li class="treeview " data-level="0"><a class="nav-link" onclick="addTabs({id:'Dashboard',title: 'Dashboard',close: true,url: '/Home/Home',urlType: 'relative'});"><i class="fa fa-tachometer"></i><span
+                    class="title menu-text">Dashboard</span><span></span></a></li>
+              <li class="treeview " data-level="0"><a class="nav-link" onclick="addTabs({id:'PMSBI00100',title: '실적현황',close: true,url: '/BI_PMS00100/Index',urlType: 'relative'});"><i class="fa fa-krw"></i><span
+                    class="title menu-text">실적현황</span><span></span></a></li>
+              <li class="treeview active" data-level="0"><a class="nav-link"><i class="fa fa-gears"></i><span class="title menu-text">시스템관리</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+                <ul class="treeview-menu menu-open" style="display: block;">
+                  <li class="treeview " data-level="1"><a style="padding-left:20px" class="nav-link"><i class="fa fa-folder-o"></i><span class="title menu-text">기준정보</span><span class="pull-right-container"><i
+                          class="fa fa-angle-left pull-right"></i></span></a>
+                    <ul class="treeview-menu" style="display: none;">
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_01',title: '사용자관리',close: true,url: '/UserMaster/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">사용자관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_02',title: '메뉴관리',close: true,url: '/MenuManage/Index',urlType: 'relative'});"><i class="fa fa-circle-o"></i><span
+                            class="title menu-text">메뉴관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_03',title: '공통코드관리',close: true,url: '/CodeMaster/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">공통코드관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_04',title: '화면버튼관리',close: true,url: '/FormManage/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">화면버튼관리</span><span></span></a></li>
+                    </ul>
+                  </li>
+                  <li class="treeview " data-level="1"><a style="padding-left:20px" class="nav-link"><i class="fa fa-folder-o"></i><span class="title menu-text">권한 관리</span><span class="pull-right-container"><i
+                          class="fa fa-angle-left pull-right"></i></span></a>
+                    <ul class="treeview-menu" style="display: none;">
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_01',title: '권한그룹설정',close: true,url: '/RoleGroup/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_02',title: '권한그룹별 메뉴설정',close: true,url: '/RoleGroupMenu/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 메뉴설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_03',title: '권한그룹별 사용자 설정',close: true,url: '/UserRoleGroup/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 사용자 설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_04',title: '권한그룹별 화면',close: true,url: '/RoleGroupForm/Index',urlType: 'relative'});"><i
+                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 화면</span><span></span></a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+          <div class="slimScrollBar" style="background: rgba(0, 0, 0, 0.2); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 887px;"></div>
+          <div class="slimScrollRail" style="width: 3px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
+        </div>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper" id="content-wrapper" style="min-height: 886px;">
+        <!--bootstrap tab스타일 다중 tab 페이지-->
+        <div class="content-tabs">
+          <button class="roll-nav roll-left tabLeft" onclick="scrollTabLeft()">
+            <i class="fa fa-backward"></i>
+          </button>
+          <nav class="page-tabs menuTabs tab-ui-menu" id="tab-menu">
+            <div class="page-tabs-content" style="margin-left: 0px;">
+
+              <a href="javascript:void(0);" data-pageid="Dashboard" class="menu_tab active"><span class="page_tab_title">Dashboard</span></a><a href="javascript:void(0);" data-pageid="PMSBI00100" class="menu_tab"><span
+                  class="page_tab_title">실적현황</span><i class="fa fa-remove page_tab_close" style="cursor: pointer; padding-left: 7px;" onclick="closeTab(this);" data-pageid="PMSBI00100"></i></a>
+            </div>
+          </nav>
+          <button class="roll-nav roll-right tabRight" onclick="scrollTabRight()">
+            <i class="fa fa-forward" style="margin-left: 3px;"></i>
+          </button>
+          <div class="btn-group roll-nav roll-right">
+            <button class="dropdown tabClose" data-toggle="dropdown">
+              탭 작업<i class="fa fa-caret-down" style="padding-left: 3px;"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" style="min-width: 128px;">
+              <li><a class="tabReload" href="javascript:refreshTab();">현재창 새로 고침</a></li>
+              <li><a class="tabCloseCurrent" href="javascript:closeCurrentTab();">현재창 닫기</a></li>
+              <li><a class="tabCloseAll" href="javascript:closeOtherTabs(true);">모두 닫기</a></li>
+              <li><a class="tabCloseOther" href="javascript:closeOtherTabs();">이 창을 제외하고 모두 닫기</a></li>
+            </ul>
+          </div>
+          <button class="roll-nav roll-right fullscreen" onclick="App.handleFullScreen()">
+            <i class="fa fa-arrows-alt"></i>
+          </button>
+        </div>
+        <div id="iframeDiv" class="content-iframe " style="background-color: rgb(255, 255, 255); height: 737px;">
+          <div class="tab-content " id="tab-content" style="">
+            <div role="tabpanel" class="tab-pane active" data-pageid="Dashboard">
+              <iframe src="./Home/Home.html" frameborder="no" id="iframe_Dashboard" class="tab_iframe" data-pageid="Dashboard" style="width: 100%; height: 794px;">
+              </iframe>
+            </div>
+            <div role="tabpanel" class="tab-pane" data-pageid="PMSBI00100">
+              <iframe src="./BI_PMS00100/Index.html" frameborder="no" id="iframe_PMSBI00100" class="tab_iframe" data-pageid="PMSBI00100" style="width: 100%; height: 794px;">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.content-wrapper -->
+
+      <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+
+        </div>
+        <strong>Copyright © 2020 <a href="https://www.woongjin.co.kr/">Woongjin</a>.</strong> All rights reserved.
+      </footer>
+
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark" style="position: fixed; max-height: 100%; overflow: auto; padding-bottom: 50px;">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+          <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Home tab content -->
+          <div class="tab-pane" id="control-sidebar-home-tab">
+            <h3 class="control-sidebar-heading">Recent Activity</h3>
+            <ul class="control-sidebar-menu">
+              <li>
+                <a href="javascript:void(0)">
+                  <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                    <p>Will be 23 on April 24th</p>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <i class="menu-icon fa fa-user bg-yellow"></i>
+
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
+
+                    <p>New phone +1(800)555-1234</p>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
+
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
+
+                    <p>nora@example.com</p>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <i class="menu-icon fa fa-file-code-o bg-green"></i>
+
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
+
+                    <p>Execution time 5 seconds</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <!-- /.control-sidebar-menu -->
+
+            <h3 class="control-sidebar-heading">Tasks Progress</h3>
+            <ul class="control-sidebar-menu">
+              <li>
+                <a href="javascript:void(0)">
+                  <h4 class="control-sidebar-subheading">
+                    Custom Template Design
+                    <span class="label label-danger pull-right">70%</span>
+                  </h4>
+
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <h4 class="control-sidebar-subheading">
+                    Update Resume
+                    <span class="label label-success pull-right">95%</span>
+                  </h4>
+
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-success" style="width: 95%"></div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <h4 class="control-sidebar-subheading">
+                    Laravel Integration
+                    <span class="label label-warning pull-right">50%</span>
+                  </h4>
+
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)">
+                  <h4 class="control-sidebar-subheading">
+                    Back End Framework
+                    <span class="label label-primary pull-right">68%</span>
+                  </h4>
+
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <!-- /.control-sidebar-menu -->
+
+          </div>
+          <!-- /.tab-pane -->
+          <!-- Stats tab content -->
+          <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+          <!-- /.tab-pane -->
+          <!-- Settings tab content -->
+          <div class="tab-pane" id="control-sidebar-settings-tab">
+            <form method="post">
+              <h3 class="control-sidebar-heading">General Settings</h3>
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Report panel usage
+                  <input type="checkbox" class="pull-right" checked="">
+                </label>
+
+                <p>
+                  Some information about this general settings option
+                </p>
+              </div>
+              <!-- /.form-group -->
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Allow mail redirect
+                  <input type="checkbox" class="pull-right" checked="">
+                </label>
+
+                <p>
+                  Other sets of options are available
+                </p>
+              </div>
+              <!-- /.form-group -->
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Expose author name in posts
+                  <input type="checkbox" class="pull-right" checked="">
+                </label>
+
+                <p>
+                  Allow the user to show his name in blog posts
+                </p>
+              </div>
+              <!-- /.form-group -->
+
+              <h3 class="control-sidebar-heading">Chat Settings</h3>
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Show me as online
+                  <input type="checkbox" class="pull-right" checked="">
+                </label>
+              </div>
+              <!-- /.form-group -->
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Turn off notifications
+                  <input type="checkbox" class="pull-right">
+                </label>
+              </div>
+              <!-- /.form-group -->
+
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Delete chat history
+                  <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
+                </label>
+              </div>
+              <!-- /.form-group -->
+            </form>
+          </div>
+          <!-- /.tab-pane -->
+        </div>
+      </aside>
+      <!-- /.control-sidebar -->
+      <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+      <div class="control-sidebar-bg" style="position: fixed; height: auto;"></div>
+    </div>
+
+  </div>
+
+
+
+  <!-- ConfirmYesNo Modal-->
+  <div class="modal fade" id="ConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png">
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">메세지</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" id="confirmCancel">Cancel</button>
+          <a class="btn btn-primary" href="#" id="confirmOk">OK</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Modal-->
+  <div class="modal fade" id="MessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png">
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">［-2147467261］Object reference not set to an instance of an object.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+
+</html>

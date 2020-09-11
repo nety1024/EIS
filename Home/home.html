@@ -1,0 +1,706 @@
+<html style="height: auto;">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>WPMS_BI</title>
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">
+  <link href="../Content/AdminLTE2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../Content/AdminLTE2/dist/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../Content/AdminLTE2/dist/css/ionicons.min.css" rel="stylesheet">
+  <link href="../Content/AdminLTE2/dist/css/AdminLTE.min.css" rel="stylesheet">
+  <link href="../Content/AdminLTE2/dist/css/skins/all-skins.min.css" rel="stylesheet">
+
+  <link href="../Content/dx.common.css" rel="stylesheet">
+  <link href="../Content/dx.light.compact.css" rel="stylesheet">
+
+  <script src="../Scripts/jquery-3.5.1.js"></script>
+  <script src="../Content/AdminLTE2/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="../Content/AdminLTE2/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../Content/AdminLTE2/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  <script src="../Content/AdminLTE2/plugins/fastclick/fastclick.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/demo.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app_iframe.js"></script>
+  <script src="../Scripts/STDCommon.js"></script>
+  <script src="../Scripts/cldr.js"></script>
+  <script src="../Scripts/cldr/event.js"></script>
+  <script src="../Scripts/cldr/supplemental.js"></script>
+  <script src="../Scripts/cldr/unresolved.js"></script>
+  <script src="../Scripts/globalize.js"></script>
+  <script src="../Scripts/globalize/message.js"></script>
+  <script src="../Scripts/globalize/number.js"></script>
+  <script src="../Scripts/globalize/currency.js"></script>
+  <script src="../Scripts/globalize/date.js"></script>
+  <script src="../Scripts/supplemental.js"></script>
+  <script src="../Scripts/ko.js"></script>
+  <script src="../Scripts/dx.all.debug.js"></script>
+  <script src="../Scripts/aspnet/dx.aspnet.mvc.js"></script>
+  <script src="../Scripts/aspnet/dx.aspnet.data.js"></script>
+
+
+
+
+  <script>
+    // language
+    $(function() {
+      Globalize.locale(navigator.language);
+    });
+
+
+    // Get Info session
+    function sessionGet(key) {
+      let stringValue = window.sessionStorage.getItem(key)
+      if (stringValue !== null) {
+        let value = JSON.parse(stringValue)
+        let expirationDate = new Date(value.expirationDate)
+        if (expirationDate > new Date()) {
+          return value.value
+        } else {
+          alert("세션만료 테스트");
+          window.sessionStorage.removeItem(key)
+        }
+      }
+      return null
+    }
+
+
+    // Add into session
+    function sessionSet(key, value, expirationInMin = 3600) {
+      let expirationDate = new Date(new Date().getTime() + (expirationInMin * 1000));
+
+      let newValue = {
+        value: value,
+        expirationDate: expirationDate.toISOString()
+      }
+
+      window.sessionStorage.setItem(key, JSON.stringify(newValue))
+    }
+
+
+    // Data Source Err ErrorHandler
+    function OnDataErrorHandler(e) {
+      Common_MsgBox(e.message);
+    }
+
+
+    // Confirm Message Box
+    function Confirm_MsgBox(title, msg, callBack) {
+
+      var fClose = function() {
+        $confirm.modal("hide");
+      };
+
+      var $confirm = $('#ConfirmModal');
+
+      $confirm.modal('show');
+
+      $('#ConfirmModal .modal-title').text(title);
+
+      $('#ConfirmModal .modal-body').text(msg);
+
+      $("#confirmOk").unbind().one('click', callBack).one('click', fClose);
+      $("#confirmCancel").unbind().one("click", fClose);
+
+    }
+
+
+    // Message Box
+    function Common_MsgBox(ErrMsg, ErrCode) {
+
+      if (ErrCode == _SessionOut) {
+        alert(ErrMsg);
+        parent.gotoLogin();
+      } else {
+
+        var $message = $('#MessageModal');
+
+        $message.modal('show');
+
+        $('#MessageModal .modal-body').text(ErrMsg);
+
+        $('#MessageModal .btn-secondary').off('click').click(function() {
+          $message.modal('hide');
+        });
+
+      }
+
+    }
+
+
+    // Loading bar
+    function ShowLoading(visble) {
+
+      if (visble) {
+
+        App.blockUI({
+          target: '#tab-content',
+          boxed: true,
+          message: 'Loading......' //,
+          // animate: true
+        });
+
+      } else {
+        App.unblockUI('#tab-content');
+      }
+
+    }
+  </script>
+
+</head>
+
+<body class="skin-blue fixed sidebar-mini" style="height: auto;">
+
+
+
+  <div style="width: 100%;">
+
+
+
+    <div style="background-color: #ecf0f5;">
+
+      <section class="content">
+
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="box box-success">
+
+              <div class="box-body">
+
+                <div class="row">
+
+                  <div class="col-md-3">
+
+                    <div class="row">
+
+                      <div class="col-xs-6">
+                        <label for="exampleInputEmail1">조회년월</label>
+                        <div class="form-text">
+                          <script>
+                            DevExpress.config({
+                              "serverDecimalSeparator": "."
+                            });
+                            DevExpress.aspnet.setTemplateEngine();
+                          </script>
+                          <div id="dataBox"
+                            class="dx-show-invalid-badge dx-datebox dx-textbox dx-texteditor dx-show-clear-button dx-dropdowneditor-button-visible dx-editor-outlined dx-texteditor-empty dx-widget dx-visibility-change-handler dx-auto-width dx-dropdowneditor dx-datebox-date dx-datebox-calendar">
+                            <div class="dx-dropdowneditor-input-wrapper"><input type="hidden" value="">
+                              <div class="dx-texteditor-container">
+                                <div class="dx-texteditor-input-container"><input autocomplete="off" class="dx-texteditor-input" aria-haspopup="true" aria-autocomplete="list" type="text" spellcheck="false" tabindex="0" role="combobox"
+                                    aria-expanded="false">
+                                  <div data-dx_placeholder="" class="dx-placeholder"></div>
+                                </div>
+                                <div class="dx-texteditor-buttons-container"><span class="dx-clear-button-area"><span class="dx-icon dx-icon-clear"></span></span>
+                                  <div class="dx-button-normal dx-button-mode-contained dx-widget dx-dropdowneditor-button" role="button" aria-label="Select">
+                                    <div class="dx-button-content">
+                                      <div class="dx-dropdowneditor-icon"></div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <script>
+                            DevExpress.utils.readyCallbacks.add((function($) {
+                              $("#dataBox").dxDateBox({
+                                "showClearButton": true,
+                                "type": "date",
+                                "calendarOptions": {
+                                  "maxZoomLevel": "year"
+                                },
+                                "displayFormat": "YYYY-MM"
+                              });
+                            }).bind(this, jQuery));
+                          </script>
+                        </div>
+                      </div>
+                      <div class="col-xs-6">
+                        <label for="exampleInputEmail1">조직</label>
+                        <div class="form-text">
+                          <div id="txtUserId2" class="dx-show-invalid-badge dx-textbox dx-texteditor dx-show-clear-button dx-editor-outlined dx-texteditor-empty dx-widget">
+                            <div class="dx-texteditor-container">
+                              <div class="dx-texteditor-input-container"><input autocomplete="off" class="dx-texteditor-input" type="text" spellcheck="false" tabindex="0" role="textbox">
+                                <div data-dx_placeholder="" class="dx-placeholder"></div>
+                              </div>
+                              <div class="dx-texteditor-buttons-container"><span class="dx-clear-button-area"><span class="dx-icon dx-icon-clear"></span></span></div>
+                            </div>
+                          </div>
+                          <script>
+                            DevExpress.utils.readyCallbacks.add((function($) {
+                              $("#txtUserId2").dxTextBox({
+                                "showClearButton": true
+                              });
+                            }).bind(this, jQuery));
+                          </script>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-3">
+
+                    <div class="row">
+
+                      <div class="col-xs-6">
+                        <label for="exampleInputEmail1">단위</label>
+                        <div class="form-text">
+                          <div id="txtUserId3" class="dx-show-invalid-badge dx-textbox dx-texteditor dx-show-clear-button dx-editor-outlined dx-texteditor-empty dx-widget">
+                            <div class="dx-texteditor-container">
+                              <div class="dx-texteditor-input-container"><input autocomplete="off" class="dx-texteditor-input" type="text" spellcheck="false" tabindex="0" role="textbox">
+                                <div data-dx_placeholder="" class="dx-placeholder"></div>
+                              </div>
+                              <div class="dx-texteditor-buttons-container"><span class="dx-clear-button-area"><span class="dx-icon dx-icon-clear"></span></span></div>
+                            </div>
+                          </div>
+                          <script>
+                            DevExpress.utils.readyCallbacks.add((function($) {
+                              $("#txtUserId3").dxTextBox({
+                                "showClearButton": true
+                              });
+                            }).bind(this, jQuery));
+                          </script>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6">
+                        <label for="exampleInputEmail1">단위</label>
+                        <div class="form-text">
+                          <div id="devextreme4" class="dx-show-invalid-badge dx-radiogroup dx-radiogroup-horizontal dx-widget" role="radiogroup" tabindex="0"><input type="hidden" value="당월">
+                            <div class="dx-widget dx-collection">
+                              <div class="dx-item dx-item-selected dx-radiobutton-checked dx-radiobutton" role="radio" aria-selected="true" aria-checked="true" style="height: auto;">
+                                <div class="dx-radio-value-container">
+                                  <div class="dx-radiobutton-icon dx-radiobutton-icon-checked">
+                                    <div class="dx-radiobutton-icon-dot"></div>
+                                  </div>
+                                </div>
+                                <div class="dx-item-content">당월</div>
+                              </div>
+                              <div class="dx-item dx-radiobutton" role="radio" aria-selected="false" aria-checked="false" style="height: auto;">
+                                <div class="dx-radio-value-container">
+                                  <div class="dx-radiobutton-icon">
+                                    <div class="dx-radiobutton-icon-dot"></div>
+                                  </div>
+                                </div>
+                                <div class="dx-item-content">누계</div>
+                              </div>
+                            </div>
+                          </div>
+                          <script>
+                            DevExpress.utils.readyCallbacks.add((function($) {
+                              $("#devextreme4").dxRadioGroup({
+                                "items": ["당월", "누계"],
+                                "value": "당월",
+                                "layout": "horizontal"
+                              });
+                            }).bind(this, jQuery));
+                          </script>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Info boxes -->
+        <div class="row">
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-aqua"><i class="fa fa-won"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">매출액</span>
+                <span class="info-box-number">574,420</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-red"><i class="fa fa-line-chart"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">영업이익</span>
+                <span class="info-box-number">41,410</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <!-- fix for small devices only -->
+          <div class="clearfix visible-sm-block"></div>
+
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-green"><i class="fa fa-balance-scale"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">투입율</span>
+                <span class="info-box-number">90<small>%</small></span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-yellow"><i class="fa fa-play-circle-o"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">프로젝트</span>
+                <span class="info-box-number">2,000</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <!-- 주요실적 지표현황 -->
+          <div class="col-md-6">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">주요실적 지표현황</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Task</th>
+                      <th>Progress</th>
+                      <th style="width: 40px">Label</th>
+                    </tr>
+                    <tr>
+                      <td>1.</td>
+                      <td>Update software</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-red">55%</span></td>
+                    </tr>
+                    <tr>
+                      <td>2.</td>
+                      <td>Clean database</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-yellow">70%</span></td>
+                    </tr>
+                    <tr>
+                      <td>3.</td>
+                      <td>Cron job running</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-light-blue">30%</span></td>
+                    </tr>
+                    <tr>
+                      <td>4.</td>
+                      <td>Fix and squish bugs</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-green">90%</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+          </div>
+
+          <!-- 주요실적 TREND -->
+          <div class="col-md-6">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">주요실적 TREND</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Task</th>
+                      <th>Progress</th>
+                      <th style="width: 40px">Label</th>
+                    </tr>
+                    <tr>
+                      <td>1.</td>
+                      <td>Update software</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-red">55%</span></td>
+                    </tr>
+                    <tr>
+                      <td>2.</td>
+                      <td>Clean database</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-yellow">70%</span></td>
+                    </tr>
+                    <tr>
+                      <td>3.</td>
+                      <td>Cron job running</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-light-blue">30%</span></td>
+                    </tr>
+                    <tr>
+                      <td>4.</td>
+                      <td>Fix and squish bugs</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-green">90%</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+          </div>
+
+        </div>
+
+        <div class="row">
+          <!-- 매출실적 HeatMap -->
+          <div class="col-md-6">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">매출실적 HeatMap</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Task</th>
+                      <th>Progress</th>
+                      <th style="width: 40px">Label</th>
+                    </tr>
+                    <tr>
+                      <td>1.</td>
+                      <td>Update software</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-red">55%</span></td>
+                    </tr>
+                    <tr>
+                      <td>2.</td>
+                      <td>Clean database</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-yellow">70%</span></td>
+                    </tr>
+                    <tr>
+                      <td>3.</td>
+                      <td>Cron job running</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-light-blue">30%</span></td>
+                    </tr>
+                    <tr>
+                      <td>4.</td>
+                      <td>Fix and squish bugs</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-green">90%</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+          </div>
+
+          <!-- 영업이익 HeatMap -->
+          <div class="col-md-6">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">영업이익 HeatMap</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Task</th>
+                      <th>Progress</th>
+                      <th style="width: 40px">Label</th>
+                    </tr>
+                    <tr>
+                      <td>1.</td>
+                      <td>Update software</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-red">55%</span></td>
+                    </tr>
+                    <tr>
+                      <td>2.</td>
+                      <td>Clean database</td>
+                      <td>
+                        <div class="progress progress-xs">
+                          <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-yellow">70%</span></td>
+                    </tr>
+                    <tr>
+                      <td>3.</td>
+                      <td>Cron job running</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-light-blue">30%</span></td>
+                    </tr>
+                    <tr>
+                      <td>4.</td>
+                      <td>Fix and squish bugs</td>
+                      <td>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                        </div>
+                      </td>
+                      <td><span class="badge bg-green">90%</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+  <!-- ConfirmYesNo Modal-->
+  <div class="modal fade" id="ConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png">
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">메세지</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" id="confirmCancel">Cancel</button>
+          <a class="btn btn-primary" href="#" id="confirmOk">OK</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Modal-->
+  <div class="modal fade" id="MessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png">
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">메세지</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+
+</html>
