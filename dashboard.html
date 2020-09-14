@@ -13,8 +13,10 @@
   <link href="./Content/AdminLTE2/dist/css/AdminLTE.min.css" rel="stylesheet">
   <link href="./Content/AdminLTE2/dist/css/skins/all-skins.min.css" rel="stylesheet">
 
-  <link href="./Content/dx.common.css" rel="stylesheet">
-  <link href="./Content/dx.light.compact.css" rel="stylesheet">
+  <link href="../Content/dx.common.css" rel="stylesheet">
+  <link href="../Content/dx.light.compact.css" rel="stylesheet">
+
+  <link href="./Content/dalim.css" rel="stylesheet">
 
   <script src="./Scripts/jquery-3.5.1.js"></script>
   <script src="./Content/AdminLTE2/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -272,9 +274,9 @@
         <!-- Logo -->
         <a href="/Home/Index" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>W</b>-BI</span>
+          <span class="logo-mini"></span>
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>WPMS</b>-BI</span>
+          <span class="logo_img"></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
@@ -360,27 +362,32 @@
                   <li class="treeview " data-level="1"><a style="padding-left:20px" class="nav-link"><i class="fa fa-folder-o"></i><span class="title menu-text">기준정보</span><span class="pull-right-container"><i
                           class="fa fa-angle-left pull-right"></i></span></a>
                     <ul class="treeview-menu" style="display: none;">
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_01',title: '사용자관리',close: true,url: '/UserMaster/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">사용자관리</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_02',title: '메뉴관리',close: true,url: '/MenuManage/Index',urlType: 'relative'});"><i class="fa fa-circle-o"></i><span
-                            class="title menu-text">메뉴관리</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_03',title: '공통코드관리',close: true,url: '/CodeMaster/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">공통코드관리</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_04',title: '화면버튼관리',close: true,url: '/FormManage/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">화면버튼관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2">
+                        <a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_01',title: '사용자관리',close: true,url: '/UserMaster/Index',urlType: 'relative'});">
+                            <span class="title menu-text">사용자관리</span>
+                            <span></span>
+                          </a>
+                        </li>
+                      <li class="treeview " data-level="2">
+                        <a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_02',title: '메뉴관리',close: true,url: '/MenuManage/Index',urlType: 'relative'});">
+                          <span class="title menu-text">메뉴관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_03',title: '공통코드관리',close: true,url: '/CodeMaster/Index',urlType: 'relative'});">
+                            <span class="title menu-text">공통코드관리</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP01_04',title: '화면버튼관리',close: true,url: '/FormManage/Index',urlType: 'relative'});">
+                        <span class="title menu-text">화면버튼관리</span><span></span></a></li>
                     </ul>
                   </li>
-                  <li class="treeview " data-level="1"><a style="padding-left:20px" class="nav-link"><i class="fa fa-folder-o"></i><span class="title menu-text">권한 관리</span><span class="pull-right-container"><i
-                          class="fa fa-angle-left pull-right"></i></span></a>
+                  <li class="treeview " data-level="1"><a style="padding-left:20px" class="nav-link"><i class="fa fa-folder-o"></i><span class="title menu-text">권한 관리</span><span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i></span></a>
                     <ul class="treeview-menu" style="display: none;">
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_01',title: '권한그룹설정',close: true,url: '/RoleGroup/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹설정</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_02',title: '권한그룹별 메뉴설정',close: true,url: '/RoleGroupMenu/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 메뉴설정</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_03',title: '권한그룹별 사용자 설정',close: true,url: '/UserRoleGroup/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 사용자 설정</span><span></span></a></li>
-                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_04',title: '권한그룹별 화면',close: true,url: '/RoleGroupForm/Index',urlType: 'relative'});"><i
-                            class="fa fa-circle-o"></i><span class="title menu-text">권한그룹별 화면</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_01',title: '권한그룹설정',close: true,url: '/RoleGroup/Index',urlType: 'relative'});">
+                        <span class="title menu-text">권한그룹설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_02',title: '권한그룹별 메뉴설정',close: true,url: '/RoleGroupMenu/Index',urlType: 'relative'});">
+                        <span class="title menu-text">권한그룹별 메뉴설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_03',title: '권한그룹별 사용자 설정',close: true,url: '/UserRoleGroup/Index',urlType: 'relative'});">
+                        <span class="title menu-text">권한그룹별 사용자 설정</span><span></span></a></li>
+                      <li class="treeview " data-level="2"><a style="padding-left:40px" class="nav-link" onclick="addTabs({id:'SYSGRP02_04',title: '권한그룹별 화면',close: true,url: '/RoleGroupForm/Index',urlType: 'relative'});">
+                        <span class="title menu-text">권한그룹별 화면</span><span></span></a></li>
                     </ul>
                   </li>
                 </ul>
@@ -403,8 +410,13 @@
           <nav class="page-tabs menuTabs tab-ui-menu" id="tab-menu">
             <div class="page-tabs-content" style="margin-left: 0px;">
 
-              <a href="javascript:void(0);" data-pageid="Dashboard" class="menu_tab active"><span class="page_tab_title">Dashboard</span></a><a href="javascript:void(0);" data-pageid="PMSBI00100" class="menu_tab"><span
-                  class="page_tab_title">실적현황</span><i class="fa fa-remove page_tab_close" style="cursor: pointer; padding-left: 7px;" onclick="closeTab(this);" data-pageid="PMSBI00100"></i></a>
+              <a href="javascript:void(0);" data-pageid="Dashboard" class="menu_tab active">
+                <span class="page_tab_title">Dashboard</span>
+              </a>
+              <a href="javascript:void(0);" data-pageid="PMSBI00100" class="menu_tab">
+                <span class="page_tab_title">실적현황</span>
+                  <i class="fa fa-remove page_tab_close" style="cursor: pointer; padding-left: 7px;" onclick="closeTab(this);" data-pageid="PMSBI00100"></i>
+                </a>
             </div>
           </nav>
           <button class="roll-nav roll-right tabRight" onclick="scrollTabRight()">
@@ -427,14 +439,23 @@
         </div>
         <div id="iframeDiv" class="content-iframe " style="background-color: rgb(255, 255, 255); height: 737px;">
           <div class="tab-content " id="tab-content" style="">
-            <div role="tabpanel" class="tab-pane active" data-pageid="Dashboard">
+
+            <!-- <div role="tabpanel" class="tab-pane active" data-pageid="Dashboard">
               <iframe src="./Home/Home.html" frameborder="no" id="iframe_Dashboard" class="tab_iframe" data-pageid="Dashboard" style="width: 100%; height: 794px;">
               </iframe>
+            </div> -->
+
+            <div role="tabpanel" class="tab-pane active" data-pageid="Dashboard">
+              <iframe src="./Home/01.html" frameborder="no" id="iframe_Dashboard" class="tab_iframe" data-pageid="Dashboard" style="width: 100%; height: 794px;">
+              </iframe>
             </div>
+
+            <!--
             <div role="tabpanel" class="tab-pane" data-pageid="PMSBI00100">
               <iframe src="./BI_PMS00100/Index.html" frameborder="no" id="iframe_PMSBI00100" class="tab_iframe" data-pageid="PMSBI00100" style="width: 100%; height: 794px;">
               </iframe>
             </div>
+          -->
           </div>
         </div>
       </div>
@@ -444,7 +465,7 @@
         <div class="pull-right hidden-xs">
 
         </div>
-        <strong>Copyright © 2020 <a href="https://www.woongjin.co.kr/">Woongjin</a>.</strong> All rights reserved.
+        <strong>Copyright © 2020 <a href="http://www.dalimpharm.co.kr/">Dalim</a>.</strong> All rights reserved.
       </footer>
 
       <!-- Control Sidebar -->

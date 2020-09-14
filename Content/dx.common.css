@@ -1539,6 +1539,7 @@
   width: 100%;
   height: 100%;
 }
+.dx-texteditor-container {height:auto;} /*2020.09 수정*/
 .dx-texteditor-buttons-container {
   display: -webkit-box;
   display: -webkit-flex;

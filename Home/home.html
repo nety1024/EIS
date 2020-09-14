@@ -16,6 +16,7 @@
   <link href="../Content/dx.common.css" rel="stylesheet">
   <link href="../Content/dx.light.compact.css" rel="stylesheet">
 
+
   <script src="../Scripts/jquery-3.5.1.js"></script>
   <script src="../Content/AdminLTE2/plugins/jQuery/jquery-2.2.3.min.js"></script>
   <script src="../Content/AdminLTE2/bootstrap/js/bootstrap.min.js"></script>
@@ -186,14 +187,20 @@
                             DevExpress.aspnet.setTemplateEngine();
                           </script>
                           <div id="dataBox"
-                            class="dx-show-invalid-badge dx-datebox dx-textbox dx-texteditor dx-show-clear-button dx-dropdowneditor-button-visible dx-editor-outlined dx-texteditor-empty dx-widget dx-visibility-change-handler dx-auto-width dx-dropdowneditor dx-datebox-date dx-datebox-calendar">
-                            <div class="dx-dropdowneditor-input-wrapper"><input type="hidden" value="">
+                            class="dx-show-invalid-badge dx-datebox dx-textbox dx-texteditor dx-show-clear-button dx-dropdowneditor-button-visible dx-editor-outlined dx-texteditor-empty dx-widget dx-visibility-change-handler dx-auto-width dx-dropdowneditor dx-datebox-date dx-datebox-calendar"
+style="background:red;height:30px;"
+                            >
+                            <div class="dx-dropdowneditor-input-wrapper">
+                              <input type="hidden" value="">
                               <div class="dx-texteditor-container">
-                                <div class="dx-texteditor-input-container"><input autocomplete="off" class="dx-texteditor-input" aria-haspopup="true" aria-autocomplete="list" type="text" spellcheck="false" tabindex="0" role="combobox"
+                                <div class="dx-texteditor-input-container">
+                                  <input autocomplete="off" class="dx-texteditor-input" aria-haspopup="true" aria-autocomplete="list" type="text" spellcheck="false" tabindex="0" role="combobox"
                                     aria-expanded="false">
                                   <div data-dx_placeholder="" class="dx-placeholder"></div>
                                 </div>
-                                <div class="dx-texteditor-buttons-container"><span class="dx-clear-button-area"><span class="dx-icon dx-icon-clear"></span></span>
+                                <div class="dx-texteditor-buttons-container">
+                                  <span class="dx-clear-button-area">
+                                    <span class="dx-icon dx-icon-clear"></span></span>
                                   <div class="dx-button-normal dx-button-mode-contained dx-widget dx-dropdowneditor-button" role="button" aria-label="Select">
                                     <div class="dx-button-content">
                                       <div class="dx-dropdowneditor-icon"></div>
