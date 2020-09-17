@@ -1,3 +1,5 @@
+html, body, header, footer, nav, table, tr, th, td {font-size:14px;}
+
 /* 다림칼라 */
 .bg_darimblue{background-color:#5096cd !important;}
 .bg_darimlgray{background-color:#beb9b9 !important;}
@@ -19,6 +21,7 @@ background: rgba(0,0,0,0.1);color: #000;}
 .skin-blue .main-header .navbar .sidebar-toggle:hover {  background-color: #fff; color:#000; }
 .content-tabs .page-tabs a.active { background: #5096cd; color: #fff; border:none;}
 .shadow {box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
+.content-header > h1 > small { font-size: 14px; }
 
 /* left 내비게이션 */
 .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #fff;}
@@ -28,17 +31,20 @@ background: rgba(0,0,0,0.1);color: #000;}
 .skin-blue .treeview-menu>li>a {  color: #666;}
 .skin-blue .sidebar-menu>li>a i {color: #5096cd;}
 .skin-blue .sidebar-menu>li:hover>a { background: #ebebeb; }
-.skin-blue .sidebar-menu>li.active>a {    color: #fff;   background: #5096cd; border-left-color:#fff;}
+.skin-blue .sidebar-menu>li.active>a {  color: #fff;   background: #5096cd; border-left-color:#fff;}
 .skin-blue .sidebar-menu>li.active>a i {color: #fff;}
 
 
 /* 본문 */
 .dx-texteditor-container {height:auto;}
-.breadcrumb button {background: #245b86; color:#fff;}
+.breadcrumb button {background: #245b86; color:#fff; font-size:12px;}
+.breadcrumb button:hover {background: #000; color:#fff;}
 .box { border-radius: 0;}
 .box.box-info, .box.box-primary, .box.box-success { border-top: 1px solid  #5096cd;}
-
 .dx-pager .dx-page-sizes .dx-selection, .dx-pager .dx-pages .dx-selection {color: #fff;background-color: #5096cd;}
+.box-header > .fa,.box-header > .glyphicon,.box-header > .ion,.box-header .box-title { font-size: 14px; font-weight:bold;}
+.info-box-number {  font-size: 24px; }
+.info-box-content {  padding: 5px 10px; margin-left: 90px;}
 
 /* 사이즈 간격 조정 */
 
