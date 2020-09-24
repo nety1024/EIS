@@ -1,0 +1,68 @@
+html, body, header, footer, nav, table, tr, th, td {font-size:14px;}
+
+/* 다림칼라 */
+.bg_darimblue{background-color:#5096cd !important;}
+.bg_darimlgray{background-color:#beb9b9 !important;}
+.bg_darimdgray{background-color:#6E6E6E !important;}
+
+/* 로고 이미지 영역 */
+.logo_img{display: block;background: url("./images/logo.png") 0 0 no-repeat;width:200px;height:23px;margin-top:14px;}
+.skin-blue .main-header .logo { background-color: #fff; color: #000; border-bottom: 0 solid transparent; }
+.skin-blue .main-header .logo:hover {  background-color: #fff; }
+
+/* 탑 영역 */
+.skin-blue .main-header .navbar { background-color: #fff;}
+.skin-blue .main-header .navbar .sidebar-toggle { color: #000;}
+.skin-blue .main-header .navbar .nav>li>a { color:#000;}
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar
+.nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus,
+.skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav>.active>a {
+background: rgba(0,0,0,0.1);color: #000;}
+.skin-blue .main-header .navbar .sidebar-toggle:hover {  background-color: #fff; color:#000; }
+.content-tabs .page-tabs a.active { background: #5096cd; color: #fff; border:none;}
+.shadow {box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
+.content-header > h1 > small { font-size: 14px; }
+
+/* left 내비게이션 */
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #fff;}
+.skin-blue .sidebar-form {  border-radius: 3px;  border: 1px solid #ccc;  margin: 10px 10px}
+.skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {  box-shadow: none;    background-color: #fff;    border: 1px solid transparent;   height: 35px;}
+.skin-blue .sidebar a {color: #000;}
+.skin-blue .treeview-menu>li>a {  color: #666;}
+.skin-blue .sidebar-menu>li>a i {color: #5096cd;}
+.skin-blue .sidebar-menu>li:hover>a { background: #ebebeb; }
+.skin-blue .sidebar-menu>li.active>a {  color: #fff;   background: #5096cd; border-left-color:#fff;}
+.skin-blue .sidebar-menu>li.active>a i {color: #fff;}
+
+
+/* 본문 */
+.dx-texteditor-container {height:auto;}
+.breadcrumb button {background: #245b86; color:#fff; font-size:12px;}
+.breadcrumb button:hover {background: #000; color:#fff;}
+.box { border-radius: 0;}
+.box.box-info, .box.box-primary, .box.box-success { border-top: 1px solid  #5096cd;}
+.dx-pager .dx-page-sizes .dx-selection, .dx-pager .dx-pages .dx-selection {color: #fff;background-color: #5096cd;}
+.box-header > .fa,.box-header > .glyphicon,.box-header > .ion,.box-header .box-title { font-size: 14px; font-weight:bold;}
+.info-box-number {  font-size: 24px; }
+.info-box-content {  padding: 5px 10px; margin-left: 90px;}
+
+/* 로그인 화면 */
+.login-box {margin-top:0;}
+.login-logo {padding-top:40px;}
+.login-logo .dalim_logo {display:block; background: url("./images/logo.png") 50% 0 no-repeat; width:100%;height:30px;}
+.login-logo .logo_text {display:block;font-size:14px; color:#5096cd;}
+.login-box-bg {background: url("./images/bg/GettyImages-1145892681.jpg") 0 0 no-repeat;
+background-position: center center;	background-size: cover;display:flex; align-items: center; }
+.login-box-bg {background: #5096cd;display:flex; align-items: center; }
+.login-box-frame {background:#fff;height:420px;box-shadow:3px 3px 5px black;}
+.login-box-body {background: #fff;}
+.btn-login {background:#5096cd; }
+.btn-login:hover {background:#2c6b9d; }
+
+/* 사이즈 간격 조정 */
+@media (max-width: 991px) {
+.content-header > .breadcrumb { background: #5096cd;}
+}
+
+@media (min-width: 768px) {
+}

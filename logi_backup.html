@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>WPMS_BI</title>
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+  <link href="./Content/AdminLTE2/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="./Content/AdminLTE2/dist/css/font-awesome.min.css" rel="stylesheet" />
+  <link href="./Content/AdminLTE2/dist/css/ionicons.min.css" rel="stylesheet" />
+  <link href="./Content/AdminLTE2/dist/css/AdminLTE.min.css" rel="stylesheet" />
+
+  <link href="./Content/dx.common.css" rel="stylesheet" />
+  <link href="./Content/dx.light.compact.css" rel="stylesheet" />
+  <link href="./Content/dalim.css" rel="stylesheet" />
+
+  <script src="./Scripts/jquery-3.5.1.js"></script>
+  <script src="./Content/AdminLTE2/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="./Content/AdminLTE2/bootstrap/js/bootstrap.min.js"></script>
+  <script src="./Content/AdminLTE2/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  <script src="./Content/AdminLTE2/plugins/fastclick/fastclick.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/demo.js"></script>
+  <script src="./Content/AdminLTE2/dist/js/app_iframe.js"></script>
+  <script src="./Scripts/STDCommon.js"></script>
+
+  <script src="./Scripts/cldr.js"></script>
+  <script src="./Scripts/cldr/event.js"></script>
+  <script src="./Scripts/cldr/supplemental.js"></script>
+  <script src="./Scripts/cldr/unresolved.js"></script>
+  <script src="./Scripts/globalize.js"></script>
+  <script src="./Scripts/globalize/message.js"></script>
+  <script src="./Scripts/globalize/number.js"></script>
+  <script src="./Scripts/globalize/currency.js"></script>
+  <script src="./Scripts/globalize/date.js"></script>
+  <script src="./Scripts/supplemental.js"></script>
+  <script src="./Scripts/ko.js"></script>
+  <script src="./Scripts/dx.all.debug.js"></script>
+  <script src="./Scripts/aspnet/dx.aspnet.mvc.js"></script>
+  <script src="./Scripts/aspnet/dx.aspnet.data.js"></script>
+
+  <script>
+    // language
+    $(function() {
+      Globalize.locale(navigator.language);
+    });
+
+
+    // Get Info session
+    function sessionGet(key) {
+      let stringValue = window.sessionStorage.getItem(key)
+      if (stringValue !== null) {
+        let value = JSON.parse(stringValue)
+        let expirationDate = new Date(value.expirationDate)
+        if (expirationDate > new Date()) {
+          return value.value
+        } else {
+          alert("세션만료 테스트");
+          window.sessionStorage.removeItem(key)
+        }
+      }
+      return null
+    }
+
+
+    // Add into session
+    function sessionSet(key, value, expirationInMin = 3600) {
+      let expirationDate = new Date(new Date().getTime() + (expirationInMin * 1000));
+
+      let newValue = {
+        value: value,
+        expirationDate: expirationDate.toISOString()
+      }
+
+      window.sessionStorage.setItem(key, JSON.stringify(newValue))
+    }
+
+
+    // Data Source Err ErrorHandler
+    function OnDataErrorHandler(e) {
+      Common_MsgBox(e.message);
+    }
+
+
+    // Confirm Message Box
+    function Confirm_MsgBox(title, msg, callBack) {
+
+      var fClose = function() {
+        $confirm.modal("hide");
+      };
+
+      var $confirm = $('#ConfirmModal');
+
+      $confirm.modal('show');
+
+      $('#ConfirmModal .modal-title').text(title);
+
+      $('#ConfirmModal .modal-body').text(msg);
+
+      $("#confirmOk").unbind().one('click', callBack).one('click', fClose);
+      $("#confirmCancel").unbind().one("click", fClose);
+
+    }
+
+
+    // Message Box
+    function Common_MsgBox(ErrMsg, ErrCode) {
+
+      if (ErrCode == _SessionOut) {
+        alert(ErrMsg);
+        parent.gotoLogin();
+      } else {
+
+        var $message = $('#MessageModal');
+
+        $message.modal('show');
+
+        $('#MessageModal .modal-body').text(ErrMsg);
+
+        $('#MessageModal .btn-secondary').off('click').click(function() {
+          $message.modal('hide');
+        });
+      }
+    }
+
+    // Loading bar
+    function ShowLoading(visble) {
+      if (visble) {
+        App.blockUI({
+          target: '#tab-content',
+          boxed: true,
+          message: 'Loading......' //,
+          // animate: true
+        });
+      } else {
+        App.unblockUI('#tab-content');
+      }
+    }
+  </script>
+</head>
+
+<body class="hold-transition skin-blue fixed sidebar-mini">
+
+  <div style="width: 100%;">
+    <script>
+      var gCompanyCtr = "#cboCOMPANY";
+      var gUserIdCtr = "#txtUserId";
+      var gPasswordCtr = "#txtPWD";
+      var gRememberCtr = "#chkRememberMe";
+      var gCompany_Key = "gCompanyVal_";
+      var gUserId_Key = "gUserIdVal_";
+      var gRemember_Key = "gRememberVal_";
+      var gCompanyVal;
+      var gUserIdVal;
+      var gPasswordVal;
+      var gRememberVal;
+      //화면 Load
+      document.addEventListener("DOMContentLoaded", function documentReady() {
+        this.removeEventListener("DOMContentLoaded", documentReady);
+        $("#container").css("height", $(window).height());
+        //세션클리어
+        sessionSet(_SessionKey, null);
+        setEditorValidator(gCompanyCtr, _vrRequired, '회사를 선택 하십시오.'); //회사를 선택 하십시오.
+        setEditorValidator(gUserIdCtr, _vrRequired, '사용자 ID를 입력 하십시오.'); //사용자 ID를 입력 하십시오.
+        setEditorValidator(gPasswordCtr, _vrRequired, '비밀번호를 입력 하십시오.'); //비밀번호를 입력 하십시오.
+
+        gCompanyVal = localStorage.getItem(gCompany_Key) ?? "";
+        gUserIdVal = localStorage.getItem(gUserId_Key) ?? "";
+        gRememberVal = localStorage.getItem(gRemember_Key) ?? false;
+        if (gCompanyVal != "") setEditorValue(gCompanyCtr, gCompanyVal);
+        if (gUserIdVal != "") setEditorValue(gUserIdCtr, gUserIdVal);
+        setEditorValue(gRememberCtr, gRememberVal.toString().toLowerCase() == 'true' ? true : false);
+
+      });
+      function LoginCheck() {
+        //필수입력 체크
+        if (!isEditorValid(gCompanyCtr) || !isEditorValid(gUserIdCtr) || !isEditorValid(gPasswordCtr)) {
+          return;
+        }
+        //로그인 확인
+        Confirm_MsgBox('로그인' //로그인
+          , '로그인 하시겠습니까?' //로그인 하시겠습니까?
+          ,
+          function() {
+            Login();
+          }
+        );
+      }
+      function Login() {
+        //ID와 체크 여부 저장
+        gCompanyVal = getEditorValue(gCompanyCtr);
+        gUserIdVal = getEditorValue(gUserIdCtr);
+        gPasswordVal = getEditorValue(gPasswordCtr);
+        gRememberVal = getEditorValue(gRememberCtr);
+        if (gRememberVal) {
+          localStorage.setItem(gCompany_Key, gCompanyVal);
+          localStorage.setItem(gUserId_Key, gUserIdVal);
+          localStorage.setItem(gRemember_Key, gRememberVal);
+        } else {
+          localStorage.setItem(gCompany_Key, "");
+          localStorage.setItem(gUserId_Key, "");
+          localStorage.setItem(gRemember_Key, false);
+        }
+        //변수선언
+        var retValue = null;
+        var objData = {
+          UserID: gUserIdVal,
+          UserPWD: gPasswordVal,
+          ComCD: gCompanyVal
+        };
+        jQuery.ajaxSettings.traditional = true;
+        $.ajax({
+          url: '/Account/UserLogin',
+          type: 'POST',
+          data: JSON.stringify(objData),
+          contentType: "application/json; charset=utf-8",
+          beforeSend: function() {
+            ShowLoading(true);
+          },
+          error: function(msg) {
+            Common_MsgBox(msg.responseText);
+          },
+          success: function(result) {
+            retValue = result;
+            if (retValue.ResponseCode != "") {
+              if (retValue.ResponseCode == "D" || retValue.ResponseCode == "Y") {
+                Common_MsgBox(retValue.ErrorMessage);
+              } else {
+                Common_MsgBox(retValue.ErrorMessage);
+              }
+            } else {
+              sessionSet(_SessionKey, retValue.Session);
+              window.location = "/Home/Index";
+            }
+          },
+          complete: function() {
+            ShowLoading(false);
+          }
+        });
+      }
+    </script>
+
+    <div id="container" class="login-box-body" style="background-color:aliceblue;">
+
+      <div class="login-box">
+        <div class="login-logo">
+          <a href="#"><b>WPMS</b>-BI</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+          <p class="login-box-msg">Sign in to start your session</p>
+
+          <form method="post">
+            <div class="form-group has-feedback">
+              <script>
+                DevExpress.config({
+                  "serverDecimalSeparator": "."
+                });
+                DevExpress.aspnet.setTemplateEngine();
+              </script>
+              <div id="cboCOMPANY"></div>
+              <script>
+                DevExpress.utils.readyCallbacks.add((function($) {
+                  $("#cboCOMPANY").dxSelectBox({
+                    "dataSource": {
+                      "store": new DevExpress.data.ArrayStore({
+                        "data": [{
+                          "Name": "Real",
+                          "Code": "PMIS_01"
+                        }, {
+                          "Name": "Test",
+                          "Code": "PMIS_02"
+                        }]
+                      })
+                    },
+                    "displayExpr": "Name",
+                    "valueExpr": "Code",
+                    "validationMessageMode": "always",
+                    "onEnterKey": Login
+                  });
+                }).bind(this, jQuery));
+              </script>
+            </div>
+            <div class="form-group has-feedback">
+              <div id="txtUserId"></div>
+              <script>
+                DevExpress.utils.readyCallbacks.add((function($) {
+                  $("#txtUserId").dxTextBox({
+                    "placeholder": "Enter User ID",
+                    "showClearButton": true,
+                    "validationMessageMode": "always",
+                    "onEnterKey": Login
+                  });
+                }).bind(this, jQuery));
+              </script>
+            </div>
+            <div class="form-group has-feedback">
+              <div id="txtPWD"></div>
+              <script>
+                DevExpress.utils.readyCallbacks.add((function($) {
+                  $("#txtPWD").dxTextBox({
+                    "mode": "password",
+                    "placeholder": "Enter password",
+                    "showClearButton": true,
+                    "validationMessageMode": "always",
+                    "onEnterKey": Login
+                  });
+                }).bind(this, jQuery));
+              </script>
+            </div>
+            <div class="row">
+              <div class="col-xs-8">
+                <div class="checkbox icheck">
+                  <label>
+                    <div id="chkRememberMe"></div>
+                    <script>
+                      DevExpress.utils.readyCallbacks.add((function($) {
+                        $("#chkRememberMe").dxCheckBox({
+                          "text": "Remember Me"
+                        });
+                      }).bind(this, jQuery));
+                    </script>
+                  </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-xs-4">
+                <a href="#" class="btn btn-primary btn-user btn-block" onclick="LoginCheck()">
+                  Login
+                </a>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+
+
+          <!-- /.social-auth-links -->
+
+          <div class="text-center">
+            <a class="small" data-toggle="modal" href="#myModal">Forgot Password?</a>
+          </div>
+          <div class="text-center">
+            <a href="#" class="small" data-toggle="modal" data-target="#logoutModal">Create an Account!</a>
+          </div>
+
+        </div>
+        <!-- /.login-box-body -->
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ConfirmYesNo Modal-->
+  <div class="modal fade" id="ConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png" />
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">메세지</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal" id="confirmCancel">Cancel</button>
+          <a class="btn btn-primary" href="#" id="confirmOk">OK</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Modal-->
+  <div class="modal fade" id="MessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <img src="/Content/Images/MessageBox/info.png" />
+          </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">메세지</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
