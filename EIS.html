@@ -273,9 +273,6 @@
       <header class="main-header">
         <!-- Logo -->
         <a href="/Home/Index" class="logo">
-          <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"></span>
-          <!-- logo for regular state and mobile devices -->
           <span class="logo_img"></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
@@ -296,21 +293,52 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-
+                  <span class="fa fa-user" aria-hidden="true"></span>
                   <span class="hidden-xs">관리자</span>
+                  <span class="fa fa-caret-down" aria-hidden="true"></span>
                 </a>
-                <ul class="dropdown-menu">
-
-                  <!-- Menu Footer-->
-                  <li class="user-footer">
-                    <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">사용자 정보 변경</a>
-                    </div>
-                    <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Logout</a>
-                    </div>
-                  </li>
-                </ul>
+                  <ul class="dropdown-menu">
+                    <!-- Menu Footer-->
+                    <li class="user-footer">
+                      <div>
+                        <a href="#" class="">
+                          <span class="fa fa-user-o" aria-hidden="true"></span>
+                          사용자 정보 변경</a>
+                      </div>
+                      <div>
+                        <a href="#" class="">
+                          <span class="fa fa-sign-out" aria-hidden="true"></span>
+                          Logout</a>
+                      </div>
+                    </li>
+                  </ul>
+              </li>
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="fa fa-link" aria-hidden="true"></span>
+                  <span class="hidden-xs">LINK</span>
+                  <span class="fa fa-caret-down" aria-hidden="true"></span>
+                </a>
+                  <ul class="dropdown-menu">
+                    <!-- Menu Footer-->
+                    <li class="user-footer">
+                      <div>
+                        <a href="#" class="">
+                          <span class="fa fa-users" aria-hidden="true"></span>
+                          Group Ware</a>
+                      </div>
+                      <div>
+                        <a href="#" class="">
+                          <span class="fa fa-sitemap" aria-hidden="true"></span>
+                          EIS</a>
+                      </div>
+                      <div>
+                        <a href="#" class="">
+                          <span class="fa fa-medkit" aria-hidden="true"></span>
+                          e-HR</a>
+                      </div>
+                    </li>
+                  </ul>
               </li>
               <!-- Control Sidebar Toggle Button -->
 
@@ -320,7 +348,7 @@
       </header>
 
       <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar">
+      <aside class="main-sidebar" style="margin-top:50px; border-top:1px solid #ddd;">
 
         <!-- sidebar: style can be found in sidebar.less -->
         <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 887px;">
@@ -402,9 +430,9 @@
       </aside>
 
       <!-- Content Wrapper. Contains page content -->
-      <div class="content-wrapper" id="content-wrapper" style="min-height: 886px;">
+      <div class="content-wrapper" id="content-wrapper" style="min-height: 421px;">
         <!--bootstrap tab스타일 다중 tab 페이지-->
-        <div class="content-tabs">
+        <div class="content-tabs" style="background":green;>
           <button class="roll-nav roll-left tabLeft" onclick="scrollTabLeft()">
             <i class="fa fa-backward"></i>
           </button>
