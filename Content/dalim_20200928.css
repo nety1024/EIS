@@ -4,36 +4,54 @@ html, body, header, footer, nav, table, tr, th, td {font-size:14px;}
 .bg_darimblue{background-color:#5096cd !important;}
 .bg_darimlgray{background-color:#beb9b9 !important;}
 .bg_darimdgray{background-color:#6E6E6E !important;}
+.bg_background{background-color: #f1f1f1;}
 
-/* 로고 이미지 영역 */
-.logo_img{display: block;background: url("./images/logo.png") 0 0 no-repeat;width:200px;height:23px;margin-top:14px;}
-.skin-blue .main-header .logo { background-color: #fff; color: #000; border-bottom: 0 solid transparent; }
-.skin-blue .main-header .logo:hover {  background-color: #fff; }
-
-/* 탑 영역 */
-.skin-blue .main-header .navbar { background-color: #fff;}
-.skin-blue .main-header .navbar .sidebar-toggle { color: #000;}
-.skin-blue .main-header .navbar .nav>li>a { color:#000;}
-.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar
-.nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus,
-.skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav>.active>a {
-background: rgba(0,0,0,0.1);color: #000;}
-.skin-blue .main-header .navbar .sidebar-toggle:hover {  background-color: #fff; color:#000; }
+/* 헤더 영역 */
+.fixed .content-wrapper, .fixed .right-side { padding-top: 50px;}
 .content-tabs .page-tabs a.active { background: #5096cd; color: #fff; border:none;}
 .shadow {box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
 .content-header > h1 > small { font-size: 14px; }
 
+/* 로고 이미지 영역 */
+.skin-blue .main-header .logo {background-color: #fff;color: #000; border-bottom: 0 solid transparent; }
+.logo_img { display: block;background: url("./images/logo.png") 0 0 no-repeat;width:200px;height:23px;margin-top:14px;}
+.skin-blue .main-header .logo,
+.skin-blue .main-header .logo:hover { background-color: #fff; color: #000; border-bottom: 0 solid transparent; }
+
+/* 햄버거 메뉴 */
+.skin-blue .main-header .navbar {background: #fff; height:40px; }
+.skin-blue .main-header .navbar .sidebar-toggle { padding: 10px; color: #000; font-size:22px;}
+.skin-blue .main-header .navbar .sidebar-toggle:hover { padding: 10px; background:#eee;  color:#000; }
+
+/* 관리자 드롭다운 */
+.navbar-nav>li>a { margin:0; padding: 20px 5px 10px 5px; font-size:13px;}
+.navbar-nav>li>a span.fa-user, .navbar-nav>li>a span.fa-link{color: #5096cd;}
+.navbar-nav>li>a span.fa-caret-down{margin-left:3px;font-size:14px;}
+.navbar-nav > .user-menu > .dropdown-menu {  width: 100px;}
+.navbar-nav > .user-menu > .dropdown-menu > .user-footer>div>a {padding:5px; color: #333;display:block;}
+
+.skin-blue .main-header .navbar .nav>li>a { color:#000;}
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar
+.nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus,
+.skin-blue .main-header .navbar .nav .open>a,
+.skin-blue .main-header .navbar .nav .open>a:hover,
+.skin-blue .main-header .navbar .nav .open>a:focus,
+.skin-blue .main-header .navbar .nav>.active>a {
+background: rgba(0,0,0,0.1); color: #000;}
+
 /* left 내비게이션 */
-.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #fff;}
-.skin-blue .sidebar-form {  border-radius: 3px;  border: 1px solid #ccc;  margin: 10px 10px}
-.skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {  box-shadow: none;    background-color: #fff;    border: 1px solid transparent;   height: 35px;}
+.main-sidebar, .left-side {position: absolute;top: 0;left: 0; min-height: 100%;width: 230px;padding-top: 0px;}
+
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #fff; }
+.skin-blue .sidebar-form {  border-radius: 3px;  border: 1px solid #ccc;  margin: 10px; }
+.skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {  box-shadow: none;
+   background-color: #fff; border: 1px solid transparent;  height: 35px;}
 .skin-blue .sidebar a {color: #000;}
 .skin-blue .treeview-menu>li>a {  color: #666;}
 .skin-blue .sidebar-menu>li>a i {color: #5096cd;}
 .skin-blue .sidebar-menu>li:hover>a { background: #ebebeb; }
 .skin-blue .sidebar-menu>li.active>a {  color: #fff;   background: #5096cd; border-left-color:#fff;}
 .skin-blue .sidebar-menu>li.active>a i {color: #fff;}
-
 
 /* 본문 */
 .dx-texteditor-container {height:auto;}
@@ -58,6 +76,10 @@ background-position: center center;	background-size: cover;display:flex; align-i
 .login-box-body {background: #fff;}
 .btn-login {background:#5096cd; }
 .btn-login:hover {background:#2c6b9d; }
+
+
+
+
 
 /* 사이즈 간격 조정 */
 @media (max-width: 991px) {
