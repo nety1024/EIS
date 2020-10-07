@@ -51,6 +51,7 @@ background: rgba(0,0,0,0.1); color: #000;}
 /* .content-header {display:flex; padding-top:0; } */
 /* .content-header h1 {display:inline-block; flex:none; display: flex; align-items: center;} */
 .content-header h1 small {font-size:12px; }
+.content-header > .breadcrumb { background: none; } 
 /* .content-header > .breadcrumb { background: none; margin-top:5px; position: relative; top:0; right:0;  float:none; text-align: right; margin-left:auto;} */
 @media (max-width: 768px) {
 /* .content-header {display:block; padding-top:15px;} */
